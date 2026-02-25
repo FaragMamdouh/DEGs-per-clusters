@@ -1,0 +1,24 @@
+# Count DEGs per cluster
+deg_counts <- table(Thymus1.markers$cluster)
+deg_df <- as.data.frame(deg_counts)
+colnames(deg_df) <- c("Cluster", "DEGs")
+
+# Calculate percentages
+deg_df$Percentage <- round(100 * deg_df$DEGs / sum(deg_df$DEGs), 1)
+
+# Create labels with cluster + count + percentage
+labels <- paste0(
+  deg_df$Cluster, "\n",
+  deg_df$DEGs, " DEGs (",
+  deg_df$Percentage, "%)"
+)
+
+# Define custom colors
+colors <- c("#264653", "#2A9D8F", "#8AB17D", "#E9C46A", "#F4A261",
+            "#E76F51", "#CDB4DB", "#6D6875", "#B5838D")
+
+# Pie chart with custom colors
+pie(deg_df$DEGs,
+    labels = labels,
+    col = colors[1:nrow(deg_df)])
+#------------------------------------------------------------#
