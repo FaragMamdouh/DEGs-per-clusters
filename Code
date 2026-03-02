@@ -1,5 +1,6 @@
 # Count DEGs per cluster
-deg_counts <- table(Thymus1.markers$cluster)
+
+deg_counts <- table(Idents(Thymus1))
 deg_df <- as.data.frame(deg_counts)
 colnames(deg_df) <- c("Cluster", "DEGs")
 
@@ -14,11 +15,31 @@ labels <- paste0(
 )
 
 # Define custom colors
-colors <- c("#264653", "#2A9D8F", "#8AB17D", "#E9C46A", "#F4A261",
-            "#E76F51", "#CDB4DB", "#6D6875", "#B5838D")
+colors <- c( "#264653", "#E9C46A", "#2A9D8F","#F4A261", "#E76F51", 
+             "#CDB4DB", "#6D6875", "#B5838D")
+deg_df$Cluster <- factor(
+  deg_df$Cluster,
+  levels = c( "CD21+1", "CD21+2", "CD21-1", "CD21-2", "CD21-3", "CD21-4")
+)
 
+deg_df <- deg_df %>%
+  arrange(Cluster)
+cluster_colors <- c(
+  "CD21+1" = "#264653",
+  "CD21+2" = "#2A9D8F",
+  "CD21-1" = "#8AB17D",
+  "CD21-2" = "#E9C46A",
+  "CD21-3" = "#F4A261",
+  "CD21-4" = "#E76F51"
+)
+# Create label with DEGs and percentage
+labels <- paste0(
+  deg_df$Cluster, "\n",
+  deg_df$DEGs, " DEGs (",
+  round(deg_df$Percentage, 1), "%)"
+)
 # Pie chart with custom colors
 pie(deg_df$DEGs,
-    labels = labels,
-    col = colors[1:nrow(deg_df)])
+    labels = deg_df$Cluster,
+    col = cluster_colors[deg_df$Cluster])
 #------------------------------------------------------------#
