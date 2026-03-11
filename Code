@@ -1,23 +1,10 @@
-
 # Count DEGs per cluster
-
 deg_df <- Thymus1.markers %>%
   dplyr::count(cluster, name = "DEGs") %>%
   dplyr::mutate(Percentage = round(100 * DEGs / sum(DEGs), 1))
 
 colnames(deg_df) <- c("Cluster", "DEGs", "Percentage")
 
-
-# Create labels with cluster + count + percentage
-labels <- paste0(
-  deg_df$Cluster, "\n",
-  deg_df$DEGs, " DEGs (",
-  deg_df$Percentage, "%)"
-)
-
-# Define custom colors
-colors <- c("#264653", "#2A9D8F", "#8AB17D", "#E9C46A", "#F4A261",
-            "#E76F51", "#CDB4DB", "#6D6875", "#B5838D", "#FFB4A2")
 deg_df$Cluster <- factor(
   deg_df$Cluster,
   levels = c("6","1","3","0","2","4","5","7","8")
@@ -25,6 +12,7 @@ deg_df$Cluster <- factor(
 
 deg_df <- deg_df %>%
   arrange(Cluster)
+
 cluster_colors <- c(
   "6" = "#264653",
   "1" = "#2A9D8F",
@@ -36,13 +24,18 @@ cluster_colors <- c(
   "7" = "#B5838D",
   "8" = "#FFB4A2"
 )
-# Create label with DEGs and percentage
+
+# Create label with cluster, DEGs, and percentage
 labels <- paste0(
   deg_df$Cluster, "\n",
   deg_df$DEGs, " DEGs (",
-  round(deg_df$Percentage, 1), "%)"
+  deg_df$Percentage, "%)"
 )
-# Pie chart with custom colors
-pie(deg_df$DEGs,
-    labels = deg_df$Cluster,
-    col = cluster_colors[deg_df$Cluster])
+
+# Pie chart with custom colors and full labels
+pie(
+  deg_df$DEGs,
+  labels = labels,
+  col = cluster_colors[as.character(deg_df$Cluster)],
+  main = "DEGs per Cluster"
+)
